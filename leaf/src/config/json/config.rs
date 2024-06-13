@@ -19,6 +19,8 @@ pub struct Dns {
 pub struct Log {
     pub level: Option<String>,
     pub output: Option<String>,
+    #[serde(rename = "outputFile")]
+    pub output_file: Option<String>
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -288,7 +290,9 @@ pub fn to_internal(json: &mut Config) -> Result<internal::Config> {
                 }
                 _ => {
                     log.output = protobuf::EnumOrUnknown::new(internal::log::Output::FILE);
-                    log.output_file = ext_output.clone();
+                    if let Some(ext_output_file) = &ext_log.output_file {
+                        log.output_file = ext_output_file.clone();
+                    }
                 }
             }
         }
